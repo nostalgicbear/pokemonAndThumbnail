@@ -22,9 +22,9 @@ public class CreateEntries : MonoBehaviour
         {
             GameObject go = Instantiate(entryPrefab, parent);
 
-            SetRawImage rawImage = go.GetComponent<SetRawImage>();
+            ImageComponentController imageComponentController = go.GetComponent<ImageComponentController>();
 
-            rawImage.RefreshImage(urls[i], downloader);
+            imageComponentController.RefreshImage(urls[i], downloader);
         }
     }
 }
