@@ -39,28 +39,30 @@ public class ThumbnailDownloader : MonoBehaviour
     }
 
 
-    public void OnDownloadComplete(Texture2D texture, string fileName, ImageComponentController sri)
+    public void OnDownloadComplete(Texture2D texture, string fileName, ImageComponentController imageComponentController)
     {
-        SetRawImageThumbnailObject(sri, texture);
+        SetRawImageThumbnailObject(imageComponentController, texture);
         SaveThumbnail(fileName, texture.EncodeToPNG());
     }
 
-    public void StartThumbnailDownload(string thumbnailURL, ImageComponentController sri)
+    public void StartThumbnailDownload(string thumbnailURL, ImageComponentController imageComponentController)
     {
-        IEnumerator downloadObj = UpdateThumbnail(thumbnailURL, sri, OnDownloadComplete);
+        IEnumerator downloadObj = UpdateThumbnail(thumbnailURL, imageComponentController, OnDownloadComplete);
         StartCoroutine(downloadObj);
+        
     }
 
-    public void LoadThumbnail(string url, ImageComponentController sri)
+    public void LoadThumbnail(string url, ImageComponentController imageComponentController)
     {
         Texture2D texture = LoadImageFromDisk(url);
+
         if (texture != null)
         {
-            SetRawImageThumbnailObject(sri, texture);
+            SetRawImageThumbnailObject(imageComponentController, texture);
         }
     }
 
-    protected IEnumerator UpdateThumbnail(string thumbnailURL, ImageComponentController sri, System.Action<Texture2D, string, ImageComponentController> onDownloadComplete)
+    protected IEnumerator UpdateThumbnail(string thumbnailURL, ImageComponentController imageComponentController, System.Action<Texture2D, string, ImageComponentController> onDownloadComplete)
     {
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(thumbnailURL);
 
@@ -75,7 +77,7 @@ public class ThumbnailDownloader : MonoBehaviour
         {
             Texture2D texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
 
-            onDownloadComplete?.Invoke(texture, ExtractFileNameFromURL(thumbnailURL), sri);
+            onDownloadComplete?.Invoke(texture, ExtractFileNameFromURL(thumbnailURL), imageComponentController);
 
             onDownloadComplete = null;
         }
@@ -96,20 +98,20 @@ public class ThumbnailDownloader : MonoBehaviour
         return fileName;
     }
 
-    public void SetRawImageThumbnailObject(ImageComponentController sri, Texture2D texture)
+    public void SetRawImageThumbnailObject(ImageComponentController imageComponentController, Texture2D texture)
     {
-        if(sri.UsingRawImageComponent == true)
+        if(imageComponentController.UsingRawImageComponent == true)
         {
-            RawImage ri = sri.GetComponent<RawImage>();
+            RawImage ri = imageComponentController.GetComponent<RawImage>();
             ri.color = Color.white;
             ri.texture = texture;
         } else
         {
-            Image image = sri.GetComponent<Image>();
-            image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), sri.GetComponent<RectTransform>().pivot);
+            Image image = imageComponentController.GetComponent<Image>();
+            image.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), imageComponentController.GetComponent<RectTransform>().pivot);
         }
 
-        sri.ImageAssignedSuccessfully = true;
+        imageComponentController.ImageAssignedSuccessfully = true;
     }
 
 }

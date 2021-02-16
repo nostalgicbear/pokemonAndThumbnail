@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class ImageComponentController : MonoBehaviour
 {
-    [SerializeField]
     private bool usingRawImageComponent = false;
     public bool UsingRawImageComponent { get => usingRawImageComponent; }
 
@@ -30,12 +29,8 @@ public class ImageComponentController : MonoBehaviour
         else if (GetComponent<RawImage>() != null)
         {
             usingRawImageComponent = true;
-            Debug.LogError("sETTING RAW IMAGE TO TRUE");
-
         }
         else {
-            Debug.LogError("Settong raw image to false");
-
             usingRawImageComponent = false;
         }
         
